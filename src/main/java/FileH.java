@@ -1,11 +1,10 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 public class FileH {
 
@@ -48,14 +47,74 @@ public class FileH {
         return fileLines;
     }
 
+    private static void appendFile(File f, String add)
+    {
+        //prev holds the value of the old file
+        String prev = "";
+        BufferedReader reader = null;
+        FileWriter writer = null;
+        try
+        {
+            //keeps appending contents of old file
+            reader = new BufferedReader(new FileReader(f));
+            String l = reader.readLine();
+            while(l != null)
+            {
+                prev = prev + l + System.lineSeparator();
+                l = reader.readLine();
+            }
+            //adds the new contents to the file
+            prev = prev + add + System.lineSeparator();
+            writer = new FileWriter(f);
+            writer.write(prev);
+        }
+        //exception handlers
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            //close reader/writers
+            try
+            {
+                reader.close();
+                writer.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException
     {
         //creates and writes to a file
-        List<String> contents = fileReader(fileCreator());
+        File cFile = fileCreator();
+        List<String> contents = fileReader(cFile);
+
         //this iterator loops through the contents of the file and then prints it to the console
         Iterator<String> i = contents.iterator();
         while (i.hasNext())
             System.out.println(i.next());
 
+        //asks user for input and stores it in userAppend
+        Scanner in = new Scanner(System.in);
+        System.out.println("\nWhat would you like to append to the file?");
+        String userAppend = in.nextLine();
+
+        //adds the user input to the file
+        appendFile(cFile,"\nAdding extra stuff to the file: \n" + userAppend);
+
+        //the reader loops through the updated file and prints it
+        contents = fileReader(cFile);
+        i = contents.iterator();
+        while (i.hasNext())
+            System.out.println(i.next());
     }
 }

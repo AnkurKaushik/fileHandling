@@ -10,3 +10,5 @@ The following code shows how to use the readAllBytes method:
 Path file = ...;
 byte[] fileArray;
 fileArray = Files.readAllBytes(file);
+Adding extra stuff to the file: 
+nothing much
